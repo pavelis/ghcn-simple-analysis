@@ -1,0 +1,41 @@
+#!/bin/bash
+
+E_BADARGS=65
+ARGS=4
+BASEURL="https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_year"
+
+if [ $# -ne "$ARGS" ] || [ -z $1 ] || [ -z $2 ] || [ -z $3 ] || [ -z $4 ] || [ "$4" -lt "$3" ]
+then
+	echo "Use: `basename $0` station_id type year1 year2"
+	exit $E_BADARGS
+else
+	echo "Station: $1, element type: $2, years: $3 and $4"
+fi
+
+if [ -z "$DATADIR" ] || [ ! -d $DATADIR ]
+then
+	echo "DATADIR variable is not set, using current directory"
+	DATADIR=`pwd`
+fi
+
+echo "Dataset directory: $DATADIR"
+
+for (( i = "$3"; i <= "$4"; i++ )); do
+	if [ ! -f "$DATADIR/$2$1_$i.txt" ]
+	then
+		if [ ! -f "$DATADIR/$i.csv" ]
+		then
+			echo "File $i.csv not found"
+			wget $BASEURL/$i.csv.gz -O $DATADIR/$i.csv.gz
+			if [ $? -ne 0 ]
+			then
+				continue
+			fi
+			gzip -d $DATADIR/$i.csv.gz
+		fi
+		echo "Processing $i.csv"
+		cat $DATADIR/$i.csv | grep $1 | grep $2 | awk 'BEGIN {FS=","} {print $2, $4/10}' > $DATADIR/$2$1_$i.txt
+	fi
+done
+
+exit 0
