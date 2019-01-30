@@ -25,16 +25,23 @@ for (( i = "$3"; i <= "$4"; i++ )); do
 	then
 		if [ ! -f "$DATADIR/$i.csv" ]
 		then
-			echo "File $i.csv not found"
-			wget $BASEURL/$i.csv.gz -O $DATADIR/$i.csv.gz
+			echo
+			echo
+			wget $BASEURL/$i.csv.gz --retry-connrefused --wait 10 -O $DATADIR/$i.csv.gz
 			if [ $? -ne 0 ]
 			then
 				continue
 			fi
+			echo "Extracting $i.csv.gz..."
 			gzip -d $DATADIR/$i.csv.gz
+			if [ $? -ne 0 ]
+			then
+				continue
+			fi
 		fi
-		echo "Processing $i.csv"
+		echo "Processing $i.csv..."
 		cat $DATADIR/$i.csv | grep $1 | grep $2 | awk 'BEGIN {FS=","} {print $2, $4/10}' > $DATADIR/$2$1_$i.txt
+		echo `wc -l $DATADIR/$2$1_$i.txt | awk '{print $1}'` "lines fetched"
 	fi
 done
 
