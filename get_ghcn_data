@@ -9,7 +9,7 @@ then
 	echo "Use: `basename $0` station_id type year1 year2"
 	exit $E_BADARGS
 else
-	echo "Station: $1, element type: $2, years: $3 and $4"
+	echo "Station: $1, element type: $2, years between $3 and $4"
 fi
 
 if [ -z "$DATADIR" ] || [ ! -d $DATADIR ]
@@ -40,8 +40,13 @@ for (( i = "$3"; i <= "$4"; i++ )); do
 			fi
 		fi
 		echo "Processing $i.csv..."
-		cat $DATADIR/$i.csv | grep $1 | grep $2 | awk 'BEGIN {FS=","} {print $2, $4/10}' > $DATADIR/$2$1_$i.txt
-		echo `wc -l $DATADIR/$2$1_$i.txt | awk '{print $1}'` "lines fetched"
+		cat $DATADIR/$i.csv | grep "0000$1," | grep $2 | awk 'BEGIN {FS=","} {print $2, $4/10}' > $DATADIR/$2$1_$i.txt
+		lines=`wc -l $DATADIR/$2$1_$i.txt | awk '{print $1}'`
+		echo $lines "lines fetched"
+		if [ "$lines" -eq 0 ]
+		then
+			rm $DATADIR/$2$1_$i.txt
+		fi
 	fi
 done
 
