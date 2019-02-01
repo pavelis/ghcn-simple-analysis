@@ -43,10 +43,6 @@ for (( i = "$3"; i <= "$4"; i++ )); do
 		cat $DATADIR/$i.csv | grep "0000$1," | grep $2 | awk 'BEGIN {FS=","} {print $2, $4/10}' > $DATADIR/$2$1_$i.txt
 		lines=`wc -l $DATADIR/$2$1_$i.txt | awk '{print $1}'`
 		echo $lines "lines fetched"
-		if [ "$lines" -eq 0 ]
-		then
-			rm $DATADIR/$2$1_$i.txt
-		fi
 	fi
 done
 
