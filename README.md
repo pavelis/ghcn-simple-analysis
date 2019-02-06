@@ -17,10 +17,15 @@ If DATADIR directory is not set, the script uses current directory as dataset di
 
 Usage:
 ```
-./get_ghcn_data *station_id type year1 year2*
+./get_ghcn_data station_id type year1 year2
 ```
 where:
+
 *station_id* - station identification number (https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt)
+
 *type* - data type, e. g. TAVG - average temperature
+
 *year1* - starting year
+
 *year2* - finishing year
+
