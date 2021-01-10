@@ -13,16 +13,9 @@ The script that downloads climate data for given year and given meteorological s
 ### Requirements
 bash, awk, wget, gzip
 
-Dataset directory must been set before using this script:
-```
-DATADIR=/path/to/dataset/directory
-export DATADIR
-```
-If DATADIR directory is not set the script uses current directory as dataset directory.
-
 ### Usage
 ```
-./get_ghcn_data station_id type year1 year2
+./get_ghcn_data station_id type year1 year2 datadir
 ```
 where:
 
@@ -33,6 +26,15 @@ where:
 *year1* - starting year
 
 *year2* - finishing year
+
+*datadir* - dataset directory
+
+If datadir argument is not set, $DATADIR variable should be set before runnig this script:
+```
+DATADIR=/path/to/dataset/directory
+export DATADIR
+```
+If DATADIR directory is not set, the script uses current directory as dataset directory.
 
 ## avgt.awk
 The script calculates average temperatures of year, winter and summer for a station
